@@ -7,11 +7,18 @@ plugins {
     id("com.palantir.docker") version "0.35.0"
 }
 
-group = "com.d2"
+rootProject.group = "com.d2"
 version = "1.0.0"
 java {
     sourceCompatibility = JavaVersion.VERSION_17
 }
+
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+}
+
 
 repositories {
     mavenCentral()
@@ -21,18 +28,32 @@ extra["springCloudVersion"] = "2022.0.3"
 
 dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-gateway")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
+    testRuntimeOnly("com.h2database:h2")
+    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.projectreactor:reactor-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 configure<DockerExtension> {
 
     val bootJar: org.springframework.boot.gradle.tasks.bundling.BootJar by tasks
-    name = "${rootProject.name}/${project.name}:${project.version}"
+    val registry = "d2-core"
+    name = "$registry/${project.name}:${project.version}"
 
     //TODO: PATH CHANGE
-    setDockerfile(file("$rootDir/../prototype-infra/spring-app/Dockerfile"))
+    val path = "$rootDir/../prototype-infra/dockerfile/gateway/Dockerfile"
+    setDockerfile(file(path))
 
     files(bootJar.outputs.files)
 

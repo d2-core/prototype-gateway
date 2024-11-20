@@ -1,5 +1,3 @@
-server:
-  port: 9090
 spring:
   application:
     name: prototype-gateway
@@ -9,46 +7,46 @@ spring:
         locator:
           enabled: false
           lower-case-service-id: true
-#      default-filters:
-#        - name: AuthGlobalFilter
-#          args:
-#            message: spring gateway auth filter
-#        - name: LoggingGlobalFilter
-#          args:
-#            message: spring gateway logging filter
+      default-filters:
+        - name: AuthGlobalFilter
+          args:
+            message: spring gateway auth filter
+        - name: LoggingGlobalFilter
+          args:
+            message: spring gateway logging filter
       routes:
         - id: auth-service
-          uri: http://auth-service:8080
+          uri: lb://auth-service
           predicates:
             - Path=/auth-service/**
           filters:
             - RewritePath=/auth-service/(?<segment>.*), /${segment}
         - id: event-service
-          uri: http://event-service:8080
+          uri: lb://event-service
           predicates:
             - Path=/event-service/**
           filters:
             - RewritePath=/event-service/(?<segment>.*), /${segment}
         - id: notification-service
-          uri: http://notification-service:8080
+          uri: lb://notification-service
           predicates:
             - Path=/notification-service/**
           filters:
             - RewritePath=/notification-service/(?<segment>.*), /${segment}
         - id: product-service
-          uri: http://product-service:8080
+          uri: lb://product-service
           predicates:
             - Path=/product-service/**
           filters:
             - RewritePath=/product-service/(?<segment>.*), /${segment}
         - id: prototype-admin-bff
-          uri: http://prototype-admin:3000
+          uri: http://prototype-admin-bff.prototype.svc.cluster.local:3000
           predicates:
             - Path=/prototype-admin/**
           filters:
             - RewritePath=/prototype-admin/(?<segment>.*), /${segment}
         - id: prototype-app-bff
-          uri: http://product-prototype-app:3000
+          uri: http://prototype-app-bff.prototype.svc.cluster.local:3000
           predicates:
             - Path=/prototype-app/**
           filters:
