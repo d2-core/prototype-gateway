@@ -9,13 +9,13 @@ spring:
         locator:
           enabled: false
           lower-case-service-id: true
-#      default-filters:
-#        - name: AuthGlobalFilter
-#          args:
-#            message: spring gateway auth filter
-#        - name: LoggingGlobalFilter
-#          args:
-#            message: spring gateway logging filter
+      default-filters:
+        - name: AuthGlobalFilter
+          args:
+            message: spring gateway auth filter
+        - name: LoggingGlobalFilter
+          args:
+            message: spring gateway logging filter
       routes:
         - id: auth-service
           uri: http://${AUTH_HOST:localhost}:${AUTH_PORT:8080}
@@ -41,15 +41,6 @@ spring:
             - Path=/product-service/**
           filters:
             - RewritePath=/product-service/(?<segment>.*), /${segment}
-        - id: prototype-bff-app
-          uri: http://${PROTOTYPE_BFF_APP_HOST:localhost}:${PROTOTYPE_BFF_APP_PORT:3000}
-          predicates:
-            - Path=/prototype-bff-app/**
-          filters:
-            - RewritePath=/prototype-bff-app//(?<segment>.*), /${segment}
-        - id: prototype-bff-admin
-          uri: http://${PROTOTYPE_BFF_ADMIN_HOST:localhost}:${PROTOTYPE_BFF_ADMIN_PORT:3001}
-          predicates:
-            - Path=/prototype-bff-admin/**
-          filters:
-            - RewritePath=/prototype-bff-admin/(?<segment>.*), /${segment}
+
+url:
+  auth: ${AUTH_URL:http://localhost:8080}

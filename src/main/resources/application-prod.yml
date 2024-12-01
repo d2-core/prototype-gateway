@@ -5,7 +5,7 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: false
+          enabled: true
           lower-case-service-id: true
       default-filters:
         - name: AuthGlobalFilter
@@ -18,36 +18,31 @@ spring:
         - id: auth-service
           uri: lb://auth-service
           predicates:
+            - Path=/auth/**
             - Path=/auth-service/**
           filters:
             - RewritePath=/auth-service/(?<segment>.*), /${segment}
         - id: event-service
           uri: lb://event-service
           predicates:
+            - Path=/event/**
             - Path=/event-service/**
           filters:
             - RewritePath=/event-service/(?<segment>.*), /${segment}
         - id: notification-service
           uri: lb://notification-service
           predicates:
+            - Path=/notification/**
             - Path=/notification-service/**
           filters:
             - RewritePath=/notification-service/(?<segment>.*), /${segment}
         - id: product-service
           uri: lb://product-service
           predicates:
+            - Path=/product/**
             - Path=/product-service/**
           filters:
             - RewritePath=/product-service/(?<segment>.*), /${segment}
-        - id: prototype-admin-bff
-          uri: http://prototype-admin-bff.prototype.svc.cluster.local:3000
-          predicates:
-            - Path=/prototype-admin/**
-          filters:
-            - RewritePath=/prototype-admin/(?<segment>.*), /${segment}
-        - id: prototype-app-bff
-          uri: http://prototype-app-bff.prototype.svc.cluster.local:3000
-          predicates:
-            - Path=/prototype-app/**
-          filters:
-            - RewritePath=/prototype-app/(?<segment>.*), /${segment}
+
+url:
+  auth: ${AUTH_URL:http://localhost:8080}
