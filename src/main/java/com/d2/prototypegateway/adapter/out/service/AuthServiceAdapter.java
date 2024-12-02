@@ -9,14 +9,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.d2.prototypegateway.application.port.out.AuthPort;
-import com.d2.prototypegateway.core.API;
+import com.d2.prototypegateway.core.api.API;
 import com.d2.prototypegateway.model.request.ValidateTokenRequest;
 import com.d2.prototypegateway.model.dto.AdminUserAuthDto;
 import com.d2.prototypegateway.model.dto.TokenClaimsDto;
 import com.d2.prototypegateway.model.dto.UserAuthDto;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Component
 public class AuthServiceAdapter implements AuthPort {
 

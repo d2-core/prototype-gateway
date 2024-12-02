@@ -4,14 +4,16 @@ import org.springframework.stereotype.Service;
 
 import com.d2.prototypegateway.application.port.in.AuthUseCase;
 import com.d2.prototypegateway.application.port.out.AuthPort;
+import com.d2.prototypegateway.core.exception.ApiExceptionImpl;
+import com.d2.prototypegateway.core.error.GatewayErrorCodeImpl;
+import com.d2.prototypegateway.model.domain.Auth;
+import com.d2.prototypegateway.model.dto.TokenClaimsDto;
 import com.d2.prototypegateway.model.enums.Role;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple3;
-import reactor.util.function.Tuples;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,26 +21,26 @@ import reactor.util.function.Tuples;
 public class AuthService implements AuthUseCase {
 	private final ObjectMapper objectMapper;
 	private final AuthPort authPort;
+
 	@Override
-	public Mono<Tuple3<Role, Long, String>> getAuthTuple(String accessToken) {
+	public Mono<Auth> getAuth(String accessToken) {
 		return authPort.validateToken(accessToken)
-			.flatMap(tokenClaimsDto -> {
+			.flatMap(tokenClaimsDto ->
+				convertJsonWithThrow(tokenClaimsDto)
+					.map(authDetailJson -> new Auth(tokenClaimsDto.getRole(), tokenClaimsDto.getId(), authDetailJson))
+			);
+	}
+
+	public Mono<String> convertJsonWithThrow(TokenClaimsDto tokenClaimsDto) {
+		return Mono.defer(() -> {
 				if (tokenClaimsDto.getRole().equals(Role.ADMIN)) {
-					return authPort.getAdminUserAuth(tokenClaimsDto.getId())
-						.map(detail -> Tuples.of(tokenClaimsDto.getRole(), tokenClaimsDto.getId(), detail));
+					return authPort.getAdminUserAuth(tokenClaimsDto.getId());
 				} else if (tokenClaimsDto.getRole().equals(Role.APP)) {
-					return authPort.getUserAuth(tokenClaimsDto.getId())
-						.map(detail -> Tuples.of(tokenClaimsDto.getRole(), tokenClaimsDto.getId(), detail));
+					return authPort.getUserAuth(tokenClaimsDto.getId());
 				}
 				return Mono.empty();
 			})
-			.switchIfEmpty(Mono.error(new Exception()))
-			.onErrorResume(e -> Mono.error(new Exception(e)))
-			.flatMap(tuple -> Mono.fromCallable(() -> Tuples.of(tuple.getT1(), tuple.getT2(),
-				objectMapper.writeValueAsString(tuple.getT3()))))
-			.onErrorResume(e -> {
-				log.error("HELLO", e);
-				return Mono.error(new Exception(e));
-			});
+			.switchIfEmpty(Mono.error(new ApiExceptionImpl(GatewayErrorCodeImpl.NOT_FOUND_ROLE, "token claims: %s".formatted(tokenClaimsDto.getRole()))))
+			.flatMap(detail -> Mono.fromCallable(() -> objectMapper.writeValueAsString(detail)));
 	}
 }
