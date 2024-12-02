@@ -9,13 +9,6 @@ spring:
         locator:
           enabled: false
           lower-case-service-id: true
-      default-filters:
-        - name: AuthGlobalFilter
-          args:
-            message: spring gateway auth filter
-        - name: LoggingGlobalFilter
-          args:
-            message: spring gateway logging filter
       routes:
         - id: auth-service
           uri: http://${AUTH_HOST:localhost}:${AUTH_PORT:8080}
