@@ -34,4 +34,5 @@ spring:
             - RewritePath=/product-service/(?<segment>.*), /${segment}
 
 url:
+  bff-app: ${BFF_APP}
   auth: ${AUTH_URL}

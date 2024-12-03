@@ -36,4 +36,5 @@ spring:
             - RewritePath=/product-service/(?<segment>.*), /${segment}
 
 url:
+  bff-app: ${BFF_APP:http://localhost:3000}
   auth: ${AUTH_URL:http://localhost:8080}
