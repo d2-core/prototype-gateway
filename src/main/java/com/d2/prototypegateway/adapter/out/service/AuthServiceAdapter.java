@@ -1,33 +1,25 @@
 package com.d2.prototypegateway.adapter.out.service;
 
-import java.net.URI;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.d2.prototypegateway.application.port.out.AuthPort;
 import com.d2.prototypegateway.core.api.API;
-import com.d2.prototypegateway.model.request.ValidateTokenRequest;
+import com.d2.prototypegateway.core.remote.InternalWebClient;
 import com.d2.prototypegateway.model.dto.AdminUserAuthDto;
 import com.d2.prototypegateway.model.dto.TokenClaimsDto;
 import com.d2.prototypegateway.model.dto.UserAuthDto;
+import com.d2.prototypegateway.model.request.ValidateTokenRequest;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
-@Slf4j
+@RequiredArgsConstructor
 @Component
 public class AuthServiceAdapter implements AuthPort {
 
-	private final WebClient webClient;
-
-	public AuthServiceAdapter() {
-		this.webClient = WebClient.builder().build();
-
-	}
+	private final InternalWebClient internalWebClient;
 
 	@Value("${url.auth}")
 	private String baseUrl;
@@ -35,30 +27,22 @@ public class AuthServiceAdapter implements AuthPort {
 	@Override
 	public Mono<TokenClaimsDto> validateToken(String accessToken) {
 		ValidateTokenRequest request = new ValidateTokenRequest(accessToken);
-		return webClient.post()
-			.uri(URI.create(baseUrl + "/auth/v1/tokens/validate"))
-			.contentType(MediaType.APPLICATION_JSON)
-			.bodyValue(request)
-			.retrieve()
-			.bodyToMono(new ParameterizedTypeReference<API<TokenClaimsDto>>() {})
+		return internalWebClient.post(baseUrl + "/auth/v1/tokens/validate", request,
+				new ParameterizedTypeReference<API<TokenClaimsDto>>() {})
 			.map(API::getBody);
 	}
 
 	@Override
 	public Mono<AdminUserAuthDto> getAdminUserAuth(Long adminUserId) {
-		return webClient.get()
-			.uri(URI.create(baseUrl + "/auth/v1/admin-users/%s/auth".formatted(adminUserId.toString())))
-			.retrieve()
-			.bodyToMono(new ParameterizedTypeReference<API<AdminUserAuthDto>>() {})
+		return internalWebClient.get(baseUrl + "/auth/v1/admin-users/%s/auth".formatted(adminUserId), null,
+				new ParameterizedTypeReference<API<AdminUserAuthDto>>() {})
 			.map(API::getBody);
 	}
 
 	@Override
 	public Mono<UserAuthDto> getUserAuth(Long userId) {
-		return webClient.get()
-			.uri(URI.create(baseUrl + "/auth/v1/users/%s/auth".formatted(userId.toString())))
-			.retrieve()
-			.bodyToMono(new ParameterizedTypeReference<API<UserAuthDto>>() {})
+		return internalWebClient.get(baseUrl + "/auth/v1/users/%s/auth".formatted(userId), null,
+				new ParameterizedTypeReference<API<UserAuthDto>>() {})
 			.map(API::getBody);
 	}
 }

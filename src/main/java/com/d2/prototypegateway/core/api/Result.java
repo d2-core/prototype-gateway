@@ -26,15 +26,6 @@ public class Result {
 		return result;
 	}
 
-	public static Result ERROR(String code, ErrorCode errorCode) {
-		Result result = new Result();
-		result.code = code;
-		result.reason = "Reason: " + errorCode.getReason();
-		result.message = errorCode.getMessage() + "[" + code + "]";
-
-		return result;
-	}
-
 	public static Result ERROR(ErrorCode errorCode, String reasonArg) {
 		Result result = new Result();
 		result.code = errorCode.getCode();
