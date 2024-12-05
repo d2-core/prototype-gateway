@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.d2.prototypegateway.application.port.in.AuthUseCase;
 import com.d2.prototypegateway.application.port.out.AuthPort;
+import com.d2.prototypegateway.core.error.ErrorCodeImpl;
 import com.d2.prototypegateway.core.exception.ApiExceptionImpl;
-import com.d2.prototypegateway.core.error.GatewayErrorCodeImpl;
 import com.d2.prototypegateway.model.domain.Auth;
 import com.d2.prototypegateway.model.dto.TokenClaimsDto;
 import com.d2.prototypegateway.model.enums.Role;
@@ -40,7 +40,8 @@ public class AuthService implements AuthUseCase {
 				}
 				return Mono.empty();
 			})
-			.switchIfEmpty(Mono.error(new ApiExceptionImpl(GatewayErrorCodeImpl.NOT_FOUND_ROLE, "token claims: %s".formatted(tokenClaimsDto.getRole()))))
+			.switchIfEmpty(Mono.error(new ApiExceptionImpl(ErrorCodeImpl.INTERNAL_SERVER_ERROR,
+				"token claims: %s".formatted(tokenClaimsDto.getRole()))))
 			.flatMap(detail -> Mono.fromCallable(() -> objectMapper.writeValueAsString(detail)));
 	}
 }

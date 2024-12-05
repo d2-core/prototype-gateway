@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminUserAuthDto {
-	private Long id;
+	private Long adminUserId;
 }
