@@ -1,5 +1,6 @@
 package com.d2.prototypegateway.core.exception;
 
+import com.d2.prototypegateway.core.api.API;
 import com.d2.prototypegateway.core.error.ErrorCode;
 import com.d2.prototypegateway.core.api.Result;
 
@@ -13,6 +14,14 @@ public class ApiExceptionImpl extends RuntimeException implements ApiException {
 	private Result result;
 	private String log;
 	private Object body;
+
+	public <T> ApiExceptionImpl(Integer statusCode, API<T> api) {
+		super();
+		this.httpCode = statusCode;
+		this.result = api.getResult();
+		this.log = "Code: " + api.getResult().getCode() + ", Reason: " + api.getResult().getReason();
+		this.body = api.getBody();
+	}
 
 	public ApiExceptionImpl(ErrorCode errorCode, String reasonArg) {
 		super();

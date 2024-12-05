@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCodeImpl implements ErrorCode {
-	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "G-001", "internal server error",
+	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "GW-001", "internal server error",
 		"현재 시스템에 일시적인 문제가 발생했습니다. 조금 후 다시 시도해주세요.");
 
 	private final Integer httpCode;
