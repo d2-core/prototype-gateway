@@ -5,5 +5,6 @@ import org.springframework.core.Ordered;
 public class OrderConstant {
 	public static Integer AUTH = Ordered.HIGHEST_PRECEDENCE;
 	public static Integer REQUEST = -100;
-	public static Integer RESPONSE = Ordered.LOWEST_PRECEDENCE;
+	public static Integer RESPONSE = -50;
+	public static Integer EXCEPTION = Ordered.LOWEST_PRECEDENCE;
 }
