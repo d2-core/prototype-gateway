@@ -43,6 +43,11 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
 			return chain.filter(uuidExchange);
 		}
 
+		String refreshToken = exchange.getRequest().getHeaders().getFirst(HeaderConstant.X_D2_REFRESH);
+		if (refreshToken != null) {
+			return chain.filter(uuidExchange);
+		}
+
 		return authUseCase.getAuth(accessToken)
 			.contextWrite(context -> ReactorContextStorage.add(context, HeaderConstant.X_D2_REQUEST_UUID, uuid))
 			.flatMap(auth -> {
