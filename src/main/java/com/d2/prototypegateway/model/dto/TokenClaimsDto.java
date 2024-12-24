@@ -1,6 +1,6 @@
 package com.d2.prototypegateway.model.dto;
 
-import com.d2.prototypegateway.model.enums.Role;
+import com.d2.prototypegateway.model.enums.TokenRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TokenClaimsDto {
-	private Role role;
+	private TokenRole tokenRole;
 	private Long id;
 }

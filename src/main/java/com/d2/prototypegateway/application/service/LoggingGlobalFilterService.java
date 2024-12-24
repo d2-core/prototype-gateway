@@ -5,7 +5,6 @@ import org.springframework.util.MultiValueMap;
 
 import com.d2.prototypegateway.application.port.in.LoggingUseCase;
 import com.d2.prototypegateway.model.domain.Auth;
-import com.d2.prototypegateway.model.enums.Role;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -65,7 +64,7 @@ public class LoggingGlobalFilterService implements LoggingUseCase {
 		return Mono.fromRunnable(() -> {
 			log.info("\n--  --  -- --  --  --  AUTH  --  --  -- --  --  --\n"
 				+ "* UUID: " + uuid + "\n"
-				+ "* Role: " + auth.getRole().name() + "\n"
+				+ "* Role: " + auth.getTokenRole().name() + "\n"
 				+ "* Id: " + auth.getId() + "\n"
 				+ "--  --  -- --  --  --  AUTH  --  --  -- --  --  --\n");
 		});

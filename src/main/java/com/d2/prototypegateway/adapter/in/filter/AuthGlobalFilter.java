@@ -83,7 +83,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
 		ServerWebExchange mutateExchange = exchange.mutate()
 				.request(exchange.getRequest().mutate()
 				.headers(headers -> {
-					headers.set(HeaderConstant.X_D2_AUTH_ROLE, auth.getRole().name());
+					headers.set(HeaderConstant.X_D2_AUTH_ROLE, auth.getTokenRole().name());
 					headers.set(HeaderConstant.X_D2_AUTH_ID, String.valueOf(auth.getId()));
 					headers.set(HeaderConstant.X_D2_AUTH_DETAIL, auth.getAuthDetailJson());
 				})
@@ -91,7 +91,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
 			)
 			.build();
 		HttpHeaders responseHeaders = mutateExchange.getResponse().getHeaders();
-		responseHeaders.set(HeaderConstant.X_D2_AUTH_ROLE, auth.getRole().name());
+		responseHeaders.set(HeaderConstant.X_D2_AUTH_ROLE, auth.getTokenRole().name());
 		responseHeaders.set(HeaderConstant.X_D2_AUTH_ID, String.valueOf(auth.getId()));
 		responseHeaders.set(HeaderConstant.X_D2_AUTH_DETAIL, auth.getAuthDetailJson());
 		return mutateExchange;

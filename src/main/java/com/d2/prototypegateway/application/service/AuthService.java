@@ -8,7 +8,7 @@ import com.d2.prototypegateway.core.error.ErrorCodeImpl;
 import com.d2.prototypegateway.core.exception.ApiExceptionImpl;
 import com.d2.prototypegateway.model.domain.Auth;
 import com.d2.prototypegateway.model.dto.TokenClaimsDto;
-import com.d2.prototypegateway.model.enums.Role;
+import com.d2.prototypegateway.model.enums.TokenRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -27,21 +27,21 @@ public class AuthService implements AuthUseCase {
 		return authPort.validateToken(accessToken)
 			.flatMap(tokenClaimsDto ->
 				convertJsonWithThrow(tokenClaimsDto)
-					.map(authDetailJson -> new Auth(tokenClaimsDto.getRole(), tokenClaimsDto.getId(), authDetailJson))
+					.map(authDetailJson -> new Auth(tokenClaimsDto.getTokenRole(), tokenClaimsDto.getId(), authDetailJson))
 			);
 	}
 
 	public Mono<String> convertJsonWithThrow(TokenClaimsDto tokenClaimsDto) {
 		return Mono.defer(() -> {
-				if (tokenClaimsDto.getRole().equals(Role.ADMIN)) {
+				if (tokenClaimsDto.getTokenRole().equals(TokenRole.ADMIN)) {
 					return authPort.getAdminUserAuth(tokenClaimsDto.getId());
-				} else if (tokenClaimsDto.getRole().equals(Role.APP)) {
+				} else if (tokenClaimsDto.getTokenRole().equals(TokenRole.APP)) {
 					return authPort.getUserAuth(tokenClaimsDto.getId());
 				}
 				return Mono.empty();
 			})
 			.switchIfEmpty(Mono.error(new ApiExceptionImpl(ErrorCodeImpl.INTERNAL_SERVER_ERROR,
-				"token claims: %s".formatted(tokenClaimsDto.getRole()))))
+				"token claims: %s".formatted(tokenClaimsDto.getTokenRole()))))
 			.flatMap(detail -> Mono.fromCallable(() -> objectMapper.writeValueAsString(detail)));
 	}
 }
