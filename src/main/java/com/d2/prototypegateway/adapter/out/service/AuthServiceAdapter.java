@@ -27,21 +27,21 @@ public class AuthServiceAdapter implements AuthPort {
 	@Override
 	public Mono<TokenClaimsDto> validateToken(String accessToken) {
 		ValidateTokenRequest request = new ValidateTokenRequest(accessToken);
-		return internalWebClient.post(baseUrl + "/auth/v1/tokens/validate", request,
+		return internalWebClient.post(baseUrl + "/api/auth/v1/tokens/validate", request,
 				new ParameterizedTypeReference<API<TokenClaimsDto>>() {})
 			.map(API::getBody);
 	}
 
 	@Override
 	public Mono<AdminUserAuthDto> getAdminUserAuth(Long adminUserId) {
-		return internalWebClient.get(baseUrl + "/auth/v1/admin-users/%s/auth".formatted(adminUserId), null,
+		return internalWebClient.get(baseUrl + "/api/auth/v1/admin-users/%s/auth".formatted(adminUserId), null,
 				new ParameterizedTypeReference<API<AdminUserAuthDto>>() {})
 			.map(API::getBody);
 	}
 
 	@Override
 	public Mono<UserAuthDto> getUserAuth(Long userId) {
-		return internalWebClient.get(baseUrl + "/auth/v1/users/%s/auth".formatted(userId), null,
+		return internalWebClient.get(baseUrl + "/api/auth/v1/users/%s/auth".formatted(userId), null,
 				new ParameterizedTypeReference<API<UserAuthDto>>() {})
 			.map(API::getBody);
 	}
