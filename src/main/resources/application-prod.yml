@@ -14,12 +14,6 @@ spring:
             - Path=/auth-service/**
           filters:
             - RewritePath=/auth-service/(?<segment>.*), /${segment}
-        - id: event-service
-          uri: lb://event-service
-          predicates:
-            - Path=/event-service/**
-          filters:
-            - RewritePath=/event-service/(?<segment>.*), /${segment}
         - id: notification-service
           uri: lb://notification-service
           predicates:
@@ -32,6 +26,12 @@ spring:
             - Path=/product-service/**
           filters:
             - RewritePath=/product-service/(?<segment>.*), /${segment}
+        - id: insight-service
+          uri: lb://insight-service
+          predicates:
+            - Path=/insight-service/**
+          filters:
+            - RewritePath=/insight-service/(?<segment>.*), /${segment}
 
 url:
   bff-app: ${BFF_APP}

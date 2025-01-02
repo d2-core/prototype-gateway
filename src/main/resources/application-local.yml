@@ -16,12 +16,6 @@ spring:
             - Path=/auth-service/**
           filters:
             - RewritePath=/auth-service/(?<segment>.*), /${segment}
-        - id: event-service
-          uri: http://${EVENT_HOST:localhost}:${EVENT_PORT:8081}
-          predicates:
-            - Path=/event-service/**
-          filters:
-            - RewritePath=/event-service/(?<segment>.*), /${segment}
         - id: notification-service
           uri: http://${NOTIFICATION_HOST:localhost}:${NOTIFICATION_PORT:8082}
           predicates:
@@ -34,6 +28,12 @@ spring:
             - Path=/product-service/**
           filters:
             - RewritePath=/product-service/(?<segment>.*), /${segment}
+        - id: insight-service
+          uri: http://${INSIGHT_HOST:localhost}:${INSIGHT_PORT:8084}
+          predicates:
+            - Path=/insight-service/**
+          filters:
+            - RewritePath=/insight-service/(?<segment>.*), /${segment}
 
 url:
   bff-app: ${BFF_APP:http://localhost:3000}
